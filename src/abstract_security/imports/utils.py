@@ -1,4 +1,6 @@
 from .imports import *
+DEFAULT_FILE_NAME = '.env'
+DEFAULT_KEY = 'MY_PASSWORD'
 def find_and_read_env_file(key:str=DEFAULT_KEY,file_name:str=DEFAULT_FILE_NAME,  start_path:str=None):
     """
     Search for an environment file and read a specific key from it.

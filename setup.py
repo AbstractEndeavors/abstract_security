@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='abstract_security',
-    version='0.74',
+    version='0.75',
     author='putkoff',
     author_email="partners@abstractendeavors.com",
     description='The `abstract_security` module is a Python utility that provides functionality for managing environment variables and securely loading sensitive information from `.env` files. It is designed to simplify the process of accessing and managing environment variables within your Python applications.',
