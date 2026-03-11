@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import os
-from dotenv import load_dotenv
-from abstract_utilities.string_clean import eatAll,eatOuter
+from .imports import *
 def split_eq(line):
     """
     Splits a string at the first equals sign '=' and cleans up the key and value.
@@ -177,3 +175,4 @@ def get_env_path(key:str=None,path:str=None,file_name:str=None,deep_scan=False):
         str: The value of the environment variable if found, otherwise None.
     """
     return abstract_env.env_path
+abstract_env = AbstractEnv

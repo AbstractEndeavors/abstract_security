@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-import os
-from dotenv import load_dotenv
-from abstract_utilities.string_clean import eatAll,eatInner,safe_split
-from abstract_utilities.compare_utils import line_contains
-from abstract_utilities.type_utils import is_list,is_bool
-from abstract_utilities.path_utils import get_slash,path_join,if_not_last_child_join,get_home_folder,simple_path_join,is_file
+from .imports import *
 DEFAULT_FILE_NAME = '.env'
 DEFAULT_KEY = 'MY_PASSWORD'
 def find_and_read_env_file(key:str=DEFAULT_KEY,file_name:str=DEFAULT_FILE_NAME,  start_path:str=None):
