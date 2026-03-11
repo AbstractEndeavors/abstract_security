@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from .imports import *
 def split_eq(line):
     """
@@ -28,7 +27,7 @@ def dotenv_load(path:str=None):
     if path and os.path.isfile(path) and os.path.basename(path)[0] == '.':
         load_dotenv(path)
         return True
-class AbstractEnv:
+class abstractEnv:
     def __init__(self,key='MY_PASSWORD',file_name=None,path=os.getcwd(),deep_scan=False):
         file_name = file_name or '.env'
         self.re_initialize(file_name=file_name,key=key,path=path,deep_scan=deep_scan)
@@ -41,6 +40,9 @@ class AbstractEnv:
             file_name (str, optional): The name of the .env file. Defaults to '.env'.
             path (str, optional): The path where the .env file is located. Defaults to the current working directory.
         """
+
+        self.key = key or 'MY_PASSWORD'
+
         file_name = file_name or '.env'
         self.key = key or 'MY_PASSWORD'
         self.deep_scan=deep_scan
@@ -55,8 +57,8 @@ class AbstractEnv:
         self.home_folder = os.path.expanduser("~")
         self.envy_all = os.path.join(self.home_folder,'.envy_all')
         self.directories = self.get_directories()
-        self.env_value = self.find_and_read_env_file(key=self.key,file_name=self.file_name, path=self.path,initialize=False,deep_scan=self.deep_scan)
-        
+        self.env_value = self.find_and_read_env_file(key=self.key,file_name=self.file_name, path=self.path,initialize=False)
+
     def find_and_read_env_file(self,key:str=None, file_name:str=None, path=None,initialize=True,deep_scan=False):
         """
         Search for an environment file and read a specific key from it.
@@ -69,6 +71,7 @@ class AbstractEnv:
         Returns:
             str: The value corresponding to the key if found, otherwise None.
         """
+        self.env_value = self.find_and_read_env_file(key=self.key,file_name=self.file_name, path=self.path,initialize=False,deep_scan=self.deep_scan)
         # Set the default start_path to the current directory if it's None
         # Try to find the file in the start_path
         key = key or self.key
@@ -78,6 +81,9 @@ class AbstractEnv:
             self.re_initialize(key=key,file_name=file_name,path=path)
         for directory in self.directories:
             if directory and os.path.isdir(directory) and self.file_name:
+                env_path = os.path.join(directory,self.file_name)
+                if os.path.isfile(env_path):
+                    value = self.search_for_env_key(key=key,path=env_path)
                 self.env_path = os.path.join(directory,self.file_name)
                 if os.path.isfile(self.env_path):
                     value = self.search_for_env_key(key=key,path=self.env_path,deep_scan=deep_scan)
@@ -96,7 +102,9 @@ class AbstractEnv:
                 directories.append(directory)
         return directories
     
+
     def search_for_env_key(self,key:str=None,path:str=None,deep_scan=False):
+
         """
         Retrieves the value of a specified environment variable from a .env file.
 
@@ -108,6 +116,7 @@ class AbstractEnv:
         Returns:
             str: The value of the environment variable if found, otherwise None.
         """
+
         highest = [None,0,0.0]
         key = key or self.default_env_key
         path = path or self.start_path_env
@@ -130,7 +139,6 @@ class AbstractEnv:
                             highest = [line_value,key_parts]
                     if deep_scan and highest[0] != None:
                         return line_value
-                        
     def get_env_value(key:str=None,path:str=os.getcwd(),file_name:str=None):
         """
         Retrieves the value of the specified environment variable.
@@ -175,4 +183,4 @@ def get_env_path(key:str=None,path:str=None,file_name:str=None,deep_scan=False):
         str: The value of the environment variable if found, otherwise None.
     """
     return abstract_env.env_path
-abstract_env = AbstractEnv
+AbstractEnv = abstractEnv
