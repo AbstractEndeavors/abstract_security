@@ -1,31 +1,25 @@
-from .imports import getpass,bcrypt
+from .imports import getpass,bcrypt,secrets,string as _string
 
 def generate_salt(rounds=None):
     rounds = rounds or 10
     salt = bcrypt.gensalt(rounds=rounds)
     return salt
 
-def verify_password(raw_pwd: str, hashed: str) -> bool:
-    try:
-        return bcrypt.checkpw(raw_pwd.encode("utf-8"), hashed.encode("utf-8"))
-    except Exception:
-        return False
-    
-def verify_stored_password(plaintext_pwd: str, stored_hash: str) -> bool:
+
+def verify_password(password: str, hashed: str) -> bool:
     """
-    Returns True if plaintext matches the bcrypt stored_hash, else False.
-    If the stored_hash isn’t a valid bcrypt hash, logs and returns False.
+    Verify a plaintext password against a bcrypt hash.
     """
-    if not plaintext_pwd or not stored_hash:
+    if not password or not hashed:
         return False
+
     try:
         return bcrypt.checkpw(
-            plaintext_pwd.encode("utf8"),
-            stored_hash.encode("utf8")
+            password.encode("utf-8"),
+            hashed.encode("utf-8")
         )
-    except ValueError as e:
-        # invalid salt or hash format
-        logging.error("Invalid bcrypt hash in DB: %s", e)
+    except ValueError:
+        # invalid hash format
         return False
     
 def bcrypt_plain_text(plaintext_pwd,rounds=None):
@@ -36,6 +30,17 @@ def bcrypt_plain_text(plaintext_pwd,rounds=None):
     return bcrypt_hash
 
 
+def hash_password(password: str, rounds: int = 12) -> str:
+    """
+    Hash a plaintext password using bcrypt.
+    """
+    if not password:
+        raise ValueError("Password cannot be empty")
+
+    salt = bcrypt.gensalt(rounds=rounds)
+    return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
 
 
-
+def generate_password(length=16) -> str:
+    alphabet = _string.ascii_letters + _string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
